@@ -1,0 +1,9 @@
+﻿Content/background-1.png created by Alucard on OpenGameArt.org ("https://opengameart.org/content/2d-top-down-highway-background") CC BY 3.0
+
+Content/skeleton-move_0 created by rileygombart on OpenGameArt.org ("https://opengameart.org/content/animated-top-down-zombie") CC0 1.0
+
+Content/skeleton-move_4 created by rileygombart on OpenGameArt.org ("https://opengameart.org/content/animated-top-down-zombie") CC0 1.0
+
+Content/skeleton-move_7 created by rileygombart on OpenGameArt.org ("https://opengameart.org/content/animated-top-down-zombie") CC0 1.0
+
+Content/survivor-idle_handgun_0 created by rileygombart on OpenGameArt.org ("https://opengameart.org/content/animated-top-down-survivor-player") CC BY 3.0
