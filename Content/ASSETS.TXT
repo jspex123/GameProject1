@@ -7,3 +7,9 @@ Content/skeleton-move_4 created by rileygombart on OpenGameArt.org ("https://ope
 Content/skeleton-move_7 created by rileygombart on OpenGameArt.org ("https://opengameart.org/content/animated-top-down-zombie") CC0 1.0
 
 Content/survivor-idle_handgun_0 created by rileygombart on OpenGameArt.org ("https://opengameart.org/content/animated-top-down-survivor-player") CC BY 3.0
+
+Content/ZombiesAreComing created by yd on OpenGameArt.org ("https://opengameart.org/content/zombies-march") CC0 1.0
+
+Content/pained_noise_01 created by Wandering Door Games on OpenGameArt.org ("https://opengameart.org/content/pained-noise") CC BY-SA 4.0
+
+Content/scifi_main_menu created by dklon on OpenGameArt.org ("https://opengameart.org/content/grungy-title-screen-background") CC BY 3.0
