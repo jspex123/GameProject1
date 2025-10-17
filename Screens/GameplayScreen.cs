@@ -14,6 +14,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using static System.TimeZoneInfo;
+using Color = Microsoft.Xna.Framework.Color;
 using SpriteBatch = Microsoft.Xna.Framework.Graphics.SpriteBatch;
 
 namespace GameProject1.Screens
@@ -30,6 +31,9 @@ namespace GameProject1.Screens
 		private SoundEffect hitFromZombie;
 
 		public ZombieSprite[] zombies;
+		public Matrix matrix;
+		private float backgroundScale = 1.5f;
+		private Vector2 worldSize;
 
 		public GameplayScreen()
 		{
@@ -44,12 +48,13 @@ namespace GameProject1.Screens
 			survivor = new SurvivorSprite();
 			zombies = new ZombieSprite[]
 			{
-				new ZombieSprite() { Position = new Vector2(100, 200), Direction = Direction.Down },
-				new ZombieSprite() { Position = new Vector2(400, 250), Direction = Direction.Up },
-				new ZombieSprite() { Position = new Vector2(700, 200), Direction = Direction.Down }
+				new ZombieSprite(20f) { Position = new Vector2(100, 200) },
+				new ZombieSprite(50f) { Position = new Vector2(200, 150) },
+				new ZombieSprite(30f) { Position = new Vector2(700, 200) }
 			};
 
 			background = content.Load<Texture2D>("background-1");
+			worldSize = new Vector2(background.Width * backgroundScale, background.Height * backgroundScale);
 			survivor.LoadContent(content);
 			foreach (var zombie in zombies)
 			{
@@ -86,13 +91,13 @@ namespace GameProject1.Screens
 
 			hitSoundCooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-			survivor.Update(gameTime);
+			survivor.Update(gameTime, matrix);
 			survivor.Colliding = false;
 
 			bool soundPlayedThisFrame = false;
 			foreach (var zombie in zombies)
 			{
-				zombie.Update(gameTime);
+				zombie.Update(gameTime, survivor.Bounds.Center);
 				if (survivor.Bounds.CollidesWith(zombie.Bounds))
 				{
 					survivor.Colliding = true;
@@ -104,13 +109,27 @@ namespace GameProject1.Screens
 					}
 				}
 			}
+			var viewport = ScreenManager.GraphicsDevice.Viewport;
+			Vector2 screenCenter = new Vector2(viewport.Width / 2f, viewport.Height / 2f);
+			float cameraX = survivor.Bounds.Center.X;
+			float cameraY = survivor.Bounds.Center.Y;
+
+			float minX = viewport.Width / 2f;
+			float maxX = worldSize.X - viewport.Width / 2f;
+			float minY = viewport.Height / 2f;
+			float maxY = worldSize.Y - viewport.Height / 2f;
+			cameraX = MathHelper.Clamp(cameraX, minX, maxX);
+			cameraY = MathHelper.Clamp(cameraY, minY, maxY);
+
+			matrix = Matrix.CreateTranslation(-cameraX, -cameraY, 0) *
+						   Matrix.CreateTranslation(screenCenter.X, screenCenter.Y, 0);
 		}
 
 		public override void Draw(GameTime gameTime)
 		{
 			var spriteBatch = ScreenManager.SpriteBatch;
-			spriteBatch.Begin();
-			spriteBatch.Draw(background, new Vector2(-20, 0), Microsoft.Xna.Framework.Color.White * TransitionAlpha);
+			spriteBatch.Begin(blendState: BlendState.AlphaBlend, transformMatrix: matrix);
+			spriteBatch.Draw(background, Vector2.Zero, null, Color.White * TransitionAlpha, 0f, Vector2.Zero, backgroundScale, SpriteEffects.None, 0);
 			survivor.Draw(gameTime, spriteBatch);
 			foreach (var zombie in zombies)
 			{

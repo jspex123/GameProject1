@@ -10,11 +10,6 @@ using System.Threading.Tasks;
 
 namespace GameProject1
 { 
-	public enum Direction
-	{
-		Down = 0,
-		Up = 2,
-	}
 	public class ZombieSprite
 	{
 		private Texture2D[] textures;
@@ -25,13 +20,25 @@ namespace GameProject1
 
 		private short animationFrame;
 
-		public Direction Direction;
+		private Vector2 position;
 
-		public Vector2 Position;
+		private float rotation;
 
 		private BoundingCircle bounds;
 		
 		public BoundingCircle Bounds => bounds;
+
+		public float Speed;
+
+		public Vector2 Position
+		{
+			get => position;
+			set => position = value;
+		}
+		public ZombieSprite(float speed)
+		{
+			Speed = speed;
+		}
 
 		public void LoadContent(ContentManager content)
 		{
@@ -42,23 +49,18 @@ namespace GameProject1
 			bounds = new BoundingCircle(Position, 45f);
 		}
 
-		public void Update(GameTime gameTime)
+		public void Update(GameTime gameTime, Vector2 survivorPosition)
 		{
-			directionTimer += gameTime.ElapsedGameTime.TotalSeconds;
+			Vector2 direction = survivorPosition - position;
+			float distance = direction.Length();
 
-			if (directionTimer > 2.0)
+			if (distance > 0)
 			{
-				Direction = Direction == Direction.Up ? Direction.Down : Direction.Up;
-				directionTimer -= 2.0;
-			}
-			switch (Direction)
-			{
-				case Direction.Up:
-					Position += new Vector2(0, -1) * 100 * (float)gameTime.ElapsedGameTime.TotalSeconds;
-					break;
-				case Direction.Down:
-					Position += new Vector2(0, 1) * 100 * (float)gameTime.ElapsedGameTime.TotalSeconds;
-					break;
+				direction /= distance;
+
+				position += direction * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+				rotation = (float)Math.Atan2(direction.Y, direction.X);
 			}
 
 			animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
@@ -74,11 +76,9 @@ namespace GameProject1
 
 		public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
 		{
-			float rotation = Direction == Direction.Up ? -MathHelper.PiOver2 : MathHelper.PiOver2;
-			
 			Vector2 origin = new Vector2(textures[animationFrame].Width / 2f, textures[animationFrame].Height / 2f);
 			
-			spriteBatch.Draw(textures[animationFrame], Position, null, Color.White, rotation, origin, 0.5f, SpriteEffects.None, 0);
+			spriteBatch.Draw(textures[animationFrame], position, null, Color.White, rotation, origin, 0.5f, SpriteEffects.None, 0);
 		}
 	}
 }

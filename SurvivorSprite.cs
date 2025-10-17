@@ -15,7 +15,8 @@ namespace GameProject1
 	{
 		private Texture2D texture;
 		private KeyboardState keyboardState;
-		private Vector2 position = new Vector2(225, 400);
+		private Vector2 position = new Vector2(400, 240);
+		public Vector2 Position => position;
 		private float rotation;
 		private MouseState mouseState;
 
@@ -31,12 +32,14 @@ namespace GameProject1
 			bounds = new BoundingCircle(position, 45f);
 		}
 
-		public void Update(GameTime gameTime)
+		public void Update(GameTime gameTime, Matrix cameraMatrix)
 		{
 			keyboardState = Keyboard.GetState();
 			mouseState = Mouse.GetState();
-			Vector2 mousePosition = new Vector2(mouseState.X, mouseState.Y);
-			Vector2 direction = mousePosition - position;
+			Matrix inverseCamera = Matrix.Invert(cameraMatrix);
+			Vector2 mouseScreenPosition = new Vector2(mouseState.X, mouseState.Y);
+			Vector2 mouseWorldPosition = Vector2.Transform(mouseScreenPosition, inverseCamera);
+			Vector2 direction = mouseWorldPosition - position;
 			rotation = (float)Math.Atan2(direction.Y, direction.X);
 
 			if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)) position += new Vector2(0, -2);
